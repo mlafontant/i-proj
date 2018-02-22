@@ -1,33 +1,47 @@
-import React, {Component} from 'React'
-import { createStore } from './../myRedux/Medux';
-import { reducer } from './../reducer/reducer';
+import React, {Component} from 'React';
+import PropTypes from 'prop-types';
 
 class Counter extends Component {
     constructor(props) {
         super(props);
-        this.initialState = {
-            counter: 0
-        };
-        this.store = createStore(reducer, this.initialState);
-        this.mapDispatchtoProps = {
-            incre: () => { 
-                this.store.subscribe(this.render);
-                this.store.dispatch({ type: 'INCREMENT' }) },
-            decre: () => { this.store.dispatch({ type: 'DECREMENT' }) }
-        }
         this.render = this.render.bind(this);
+        this.forceUpdate = this.forceUpdate.bind(this);
+        this.style = {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'space-around',
+            width: '45%',
+            fontFamily: 'Futura'
+        }
     }
-
+    
     render() {
-        const { counter } = this.store.getState();
-        console.log('in render', counter);
+        //gets state from its parent's context. Passed Implicitly via the provider
+        const { store } = this.context;
+        const { counter } = store.getState();
+        store.subscribe(this.forceUpdate);
+
+        this.mapDispatchtoProps = {
+            incre: () => { store.dispatch({ type: 'INCREMENT' })},
+            decre: () => { store.dispatch({ type: 'DECREMENT' })}
+        }
+
+        this.renderTime = new Date(Date.now());
+
         return (
             <div>
-               Counter { counter }
-               <button onClick={ this.mapDispatchtoProps.incre }></button>
-            </div>
+                <div style={this.style} >
+                    <button className={'btn btn-outline-info'} onClick={ this.mapDispatchtoProps.incre }> + </button>
+                <h3> Counter { counter } </ h3>
+                    <button className={'btn btn-outline-info'}onClick={ this.mapDispatchtoProps.decre }> - </ button>
+                </ div>
+                <p> Last Rendered { this.renderTime.toString() } </ p>
+             </div>
         )
     }
+}
+Counter.contextTypes = {
+    store: PropTypes.object
 }
 
 export default Counter;

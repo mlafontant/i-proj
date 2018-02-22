@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class M_provider extends Component {
     
-    //This provides context to any component wrapped instide the M_provider including grandchildren
+    //This provides context to any component wrapped inside the M_provider including grandchildren
     getChildContext() {
         return {
             store: this.props.store
@@ -16,7 +17,7 @@ class M_provider extends Component {
 }
 //We need to specify that the store key has a propType of object
 M_provider.childContextTypes = {
-    store: React.Proptypes.object
+    store: PropTypes.object
 };
 
 //Now we don't need to pass the store down to each component one by one. Instead, we can just neeed to specify the content type in each child that needs access to the store once.
